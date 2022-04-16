@@ -8,13 +8,15 @@ assimp library.
 
 Three step plan is going to be used for the analysis.
 
-### Initial setup
+### Initial setup [Done]
 
 This part includes the initial setup of the assimp library and reading/rendering one basic file.
 
 ### Testing
 
 This part related to test scenarios for the assimp library for possible integration to the Gazebo's source code and actually implementing them.
+
+Currently thinking about possible test scenarios
 
 ### Actual Implementation
 
