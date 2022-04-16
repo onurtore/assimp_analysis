@@ -25,7 +25,7 @@ If the Phase 1 analysis of the report in [here](https://docs.google.com/document
 
 ## Contributing
 
-Step two is little bit cloudy and requires different idea.
+Step two is little bit cloudy.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
