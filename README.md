@@ -23,6 +23,5 @@ Currently thinking about possible test scenarios
 If the Phase 1 analysis of the report in [here](https://docs.google.com/document/d/1bs38PMkIK1B6EcN0l4knN2lFnWhiU4hVGH9SBK0zUMU/edit?usp=sharing) be positive about assimp  integration then this part will be compilation process for the assimp library for specific usecases.  
 
 
-
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
