@@ -12,11 +12,11 @@ Three step plan is going to be used for the analysis.
 
 This part includes the initial setup of the assimp library and reading/rendering one basic file.
 
-### Testing
+### Writing a converter from assimp to gazebo for Gltf2 
 
-This part related to test scenarios for the assimp library for possible integration to the Gazebo's source code and actually implementing them.
+This part related to integration process of assimp to the Gazebo's source code.
 
-Currently thinking about possible test scenarios
+Writing a simple converter will help me to deepen my analysis on phase 1.
 
 ### Actual Implementation
 
