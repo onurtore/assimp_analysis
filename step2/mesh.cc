@@ -1,19 +1,95 @@
+/*
+Mostly taken from learnopengl.com/Model-loading/Model
+*/
+
+
 #include <ignition/common.hh> //Common
 #include <ignition/common/MeshManager.hh> //Mesh Manager
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
+
+#include "ignition/common/Mesh.hh" // Mesh
+#include "ignition/common/SubMesh.hh" // Submesh
+#include <assimp/Importer.hpp> // C++ importer interface
+#include <assimp/scene.h> // Output data structure
+#include <assimp/postprocess.h> // Post processing flags
 #include <iostream>
 #include <string>
 
-bool ConvertAssimp2Gazebo(const aiScene* scene)
-{
-  std::cout<<"Number of meshes loaded is: " << scene->mNumMeshes << "." << std::endl;
-  return true;
-  // Generate an instance of MeshManager
 
-  // Generate an instance of 
-}
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <memory>
+
+#include "ignition/math/Helpers.hh"
+#include "ignition/common/Console.hh"
+#include "ignition/common/STLLoader.hh"
+#include <ignition/utils/ImplPtr.hh>
+#include "ignition/common/MeshLoader.hh"
+#include "ignition/common/graphics/Export.hh"
+
+using namespace ignition;
+using namespace common;
+
+
+class Assimp2Gazebo
+{
+  public:
+
+    Assimp2Gazebo(const std::string& path)
+    {
+
+      LoadModel(path);
+    }
+
+  private:
+
+    void processNode(aiNode * node, const aiScene *scene)
+    {
+      // process all the node's meshes (if any)
+      for(unsigned int i = 0; i < node->mNumMeshes; i++)
+      {
+          std::cout << "Hello world";
+          aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
+          //meshes.push_back(processMesh(mesh, scene));			
+      }
+      // then do the same for each of its children
+      for(unsigned int i = 0; i < node->mNumChildren; i++)
+      {
+          processNode(node->mChildren[i], scene);
+      }
+      return;
+    }
+
+    void LoadModel( const std::string& pFile) 
+    {
+      Mesh *mesh = new Mesh();
+
+      // Create an instance of the Importer class
+      Assimp::Importer importer;
+
+      // And have it read the given file with some example postprocessing
+      // Usually - if speed is not the most important aspect for you - you'll
+      // probably to request more postprocessing than we do in this example.
+      const aiScene* scene = importer.ReadFile( pFile,
+        aiProcess_CalcTangentSpace       |
+        aiProcess_Triangulate            |
+        aiProcess_JoinIdenticalVertices  |
+        aiProcess_SortByPType);
+
+
+      if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
+      {
+        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        return;
+      }
+
+      std::cout << "Succesfully loaded the scene." << std::endl ;
+
+      processNode(scene->mRootNode, scene);
+      // We're done. Everything will be cleaned up by the importer destructor
+      return;
+    }
+};
 
 bool FileExists(std::string myfile)
 {
@@ -27,40 +103,14 @@ bool FileExists(std::string myfile)
 }
 
 
-bool Read( const std::string& pFile) 
-{
-  // Create an instance of the Importer class
-  Assimp::Importer importer;
-
-  // And have it read the given file with some example postprocessing
-  // Usually - if speed is not the most important aspect for you - you'll
-  // probably to request more postprocessing than we do in this example.
-  const aiScene* scene = importer.ReadFile( pFile,
-    aiProcess_CalcTangentSpace       |
-    aiProcess_Triangulate            |
-    aiProcess_JoinIdenticalVertices  |
-    aiProcess_SortByPType);
-
-
-  // If the import failed, report it
-  if (nullptr == scene) {
-    return false;
-  }
-
-  std::cout << "Succesfully loaded the scene." << std::endl ;
-
-  // Now we can access the file's contents.
-  ConvertAssimp2Gazebo(scene);
-
-  // We're done. Everything will be cleaned up by the importer destructor
-  return true;
-}
 
 int main() {
-    std::string file_path = "/home/otore19/Desktop/projects/assimp_analysis/step2/mesh_files/animated_cube/AnimatedCube.gltf";
-    if (FileExists(file_path))
-    {
-      std::cout << "Mesh file exists." << std::endl;
-      Read(file_path);
-    }
+
+  std::string file_path = "/home/otore19/Desktop/projects/assimp_analysis/step2/mesh_files/animated_cube/AnimatedCube.gltf";
+  if (FileExists(file_path))
+  {
+    std::cout << "Mesh file exists." << std::endl;
+    Assimp2Gazebo converter(file_path);
+
+  }
 }
