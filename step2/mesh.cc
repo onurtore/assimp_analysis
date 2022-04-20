@@ -24,35 +24,39 @@ class Assimp2Gazebo
 
     Assimp2Gazebo(const std::string& path)
     {
-
+      Mesh *mesh = new Mesh();
+      std::unique_ptr<SubMesh> subMesh(new SubMesh()); //Another way of initialization.
       LoadModel(path);
     }
 
   private:
 
-    void processNode(aiNode * node, const aiScene *scene)
+    SubMesh * assimp2GazeboMesh(aiMesh * mesh, SubMesh * gazeboMesh)
+    {
+       return gazeboMesh;
+    }
+
+    void processNode(aiNode * node, const aiScene *scene, SubMesh * gazeboMesh)
     {
       // process all the node's meshes (if any)
       for(unsigned int i = 0; i < node->mNumMeshes; i++)
       {
-          std::cout << "Hello world";
           aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
-          //meshes.push_back(processMesh(mesh, scene));			
+          assimp2GazeboMesh(mesh, gazeboMesh);
       }
       // then do the same for each of its children
       for(unsigned int i = 0; i < node->mNumChildren; i++)
       {
-          processNode(node->mChildren[i], scene);
+
+          std::unique_ptr<SubMesh> gazeboSubMesh(new SubMesh()); //Another way of initialization.
+          processNode(node->mChildren[i], scene, gazeboSubMesh);
+          gazeboMesh->AddSubMesh(std::move(gazeboSubMesh))
       }
       return;
     }
 
     void LoadModel( const std::string& pFile)
     {
-      Mesh *mesh;
-      SubMesh subMesh;
-      mesh->AddSubMesh(subMesh);
-
       // Create an instance of the Importer class
       Assimp::Importer importer;
 
@@ -74,7 +78,8 @@ class Assimp2Gazebo
 
       std::cout << "Succesfully loaded the scene." << std::endl ;
 
-      processNode(scene->mRootNode, scene);
+      processNode(scene->mRootNode, scene, this->subMesh);
+      this->mesh->AddSubMesh(std::move(this->subMesh))
       // We're done. Everything will be cleaned up by the importer destructor
       return;
     }
