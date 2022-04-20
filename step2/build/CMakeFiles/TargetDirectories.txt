@@ -1,3 +1,0 @@
-/home/otore19/Desktop/projects/assimp_analysis/step2/build/CMakeFiles/rebuild_cache.dir
-/home/otore19/Desktop/projects/assimp_analysis/step2/build/CMakeFiles/edit_cache.dir
-/home/otore19/Desktop/projects/assimp_analysis/step2/build/CMakeFiles/mesh.dir

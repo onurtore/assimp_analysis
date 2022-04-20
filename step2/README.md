@@ -1,7 +1,7 @@
 In order to build use: 
 
 ```
-g++ -g <test_name>  -o <test_name> `pkg-config --libs --cflags assimp ignition-common<N> ignition-math<N>`
+g++ -g <test_name>  -o <test_name> `pkg-config --libs --cflags assimp ignition-common<N> ignition-common<N>-graphics ignition-math<N>`
 ```
 You can get the installed ignition libraries using
 
