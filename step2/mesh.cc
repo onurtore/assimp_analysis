@@ -21,36 +21,66 @@ using namespace common;
 class Assimp2Gazebo
 {
   public:
+    Mesh *mesh = new Mesh();
 
     Assimp2Gazebo(const std::string& path)
     {
-      Mesh *mesh = new Mesh();
-      std::unique_ptr<SubMesh> subMesh(new SubMesh()); //Another way of initialization.
       LoadModel(path);
     }
 
   private:
 
-    SubMesh * assimp2GazeboMesh(aiMesh * mesh, SubMesh * gazeboMesh)
+    void assimp2GazeboMesh(aiMesh * mesh, SubMesh& gazeboMesh)
     {
-       return gazeboMesh;
+      // Retrieve all the vertex data;
+      for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+      {
+        //Process vertex positions
+        ignition::math::Vector3d vertex;
+        vertex.X(mesh->mVertices[i].x);
+        vertex.Y(mesh->mVertices[i].y);
+        vertex.Z(mesh->mVertices[i].z);
+
+        //Process vertex normals
+        ignition::math::Vector3d normal;
+        normal.X(mesh->mNormals[i].x);
+        normal.Y(mesh->mNormals[i].y);
+        normal.Z(mesh->mNormals[i].z);
+
+        //Process texture coordinates
+          //TO-DO: Implement this later...
+
+        gazeboMesh.AddVertex(vertex);
+        gazeboMesh.AddNormal(normal);
+      }
+
+      // Retrieve all the mesh's indices
+      for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+      {
+        aiFace face = mesh->mFaces[i];
+        for(unsigned int j = 0; j < face.mNumIndices; j++)
+          gazeboMesh.AddIndex(face.mIndices[j]);
+      }
+      // Retrieve material data
+        //TO-DO: Implement this later...
     }
 
-    void processNode(aiNode * node, const aiScene *scene, SubMesh * gazeboMesh)
+    void processNode(aiNode * node, const aiScene *scene)
     {
       // process all the node's meshes (if any)
+
       for(unsigned int i = 0; i < node->mNumMeshes; i++)
       {
+          SubMesh subMesh;
           aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
-          assimp2GazeboMesh(mesh, gazeboMesh);
+          assimp2GazeboMesh(mesh, subMesh);
+          this->mesh->AddSubMesh(subMesh);
+
       }
       // then do the same for each of its children
       for(unsigned int i = 0; i < node->mNumChildren; i++)
       {
-
-          std::unique_ptr<SubMesh> gazeboSubMesh(new SubMesh()); //Another way of initialization.
-          processNode(node->mChildren[i], scene, gazeboSubMesh);
-          gazeboMesh->AddSubMesh(std::move(gazeboSubMesh))
+          processNode(node->mChildren[i], scene);
       }
       return;
     }
@@ -78,8 +108,7 @@ class Assimp2Gazebo
 
       std::cout << "Succesfully loaded the scene." << std::endl ;
 
-      processNode(scene->mRootNode, scene, this->subMesh);
-      this->mesh->AddSubMesh(std::move(this->subMesh))
+      processNode(scene->mRootNode, scene);
       // We're done. Everything will be cleaned up by the importer destructor
       return;
     }
