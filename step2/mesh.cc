@@ -6,30 +6,17 @@ Mostly taken from learnopengl.com/Model-loading/Model
 #include <ignition/common.hh> //Common
 #include <ignition/common/MeshManager.hh> //Mesh Manager
 
-#include "ignition/common/Mesh.hh" // Mesh
-#include "ignition/common/SubMesh.hh" // Submesh
+#include <ignition/common/Mesh.hh> // Mesh
+#include <ignition/common/SubMesh.hh> // Submesh
 #include <assimp/Importer.hpp> // C++ importer interface
 #include <assimp/scene.h> // Output data structure
 #include <assimp/postprocess.h> // Post processing flags
-#include <iostream>
-#include <string>
 
 
-#include <string.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <memory>
 
-#include "ignition/math/Helpers.hh"
-#include "ignition/common/Console.hh"
-#include "ignition/common/STLLoader.hh"
-#include <ignition/utils/ImplPtr.hh>
-#include "ignition/common/MeshLoader.hh"
-#include "ignition/common/graphics/Export.hh"
 
 using namespace ignition;
 using namespace common;
-
 
 class Assimp2Gazebo
 {
@@ -60,9 +47,11 @@ class Assimp2Gazebo
       return;
     }
 
-    void LoadModel( const std::string& pFile) 
+    void LoadModel( const std::string& pFile)
     {
-      Mesh *mesh = new Mesh();
+      Mesh *mesh;
+      SubMesh subMesh;
+      mesh->AddSubMesh(subMesh);
 
       // Create an instance of the Importer class
       Assimp::Importer importer;
@@ -110,7 +99,7 @@ int main() {
   if (FileExists(file_path))
   {
     std::cout << "Mesh file exists." << std::endl;
-    Assimp2Gazebo converter(file_path);
+    Assimp2Gazebo Assimp2Gazebo(file_path);
 
   }
 }
