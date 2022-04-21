@@ -18,6 +18,7 @@ This part related to integration process of assimp to the Gazebo's source code.
 
 Writing a simple converter will help me to deepen my analysis on phase 1.
 
+
 ### Actual Implementation
 
 If the Phase 1 analysis of the report in [here](https://docs.google.com/document/d/1bs38PMkIK1B6EcN0l4knN2lFnWhiU4hVGH9SBK0zUMU/edit?usp=sharing) be positive about assimp  integration then this part will be compilation process for the assimp library for specific usecases.  
